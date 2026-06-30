@@ -14,13 +14,13 @@ jobs:
       uses: actions/checkout@v4.1.7
       with:
         fetch-depth: 0
+        persist-credentials: false   # ✅ CRITICAL FIX
  
     - name: Configure Git
       run: |
         git config --global user.name "revendh"
         git config --global user.email "revendh@users.noreply.github.com"
  
-    # ✅ DIRECT PUSH WITH TOKEN (KEY FIX)
     - name: Push to customer repo
       env:
         TOKEN: ${{ secrets.TARGET_PAT }}
