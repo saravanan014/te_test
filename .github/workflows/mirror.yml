@@ -1,0 +1,31 @@
+name: Sync to Customer Repo (Post-PR Merge Only)
+ 
+on:
+  push:
+    branches:
+      - main   # ✅ ONLY trigger after merge to main
+ 
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - name: Checkout source repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+ 
+    - name: Configure Git
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "actions@github.com"
+ 
+    - name: Add customer repo remote
+      env:
+        TOKEN: ${{ secrets.TARGET_PAT }}
+      run: |
+        git remote add customer https://$TOKEN@github.com/revendh/cust_test.git
+ 
+    - name: Push ONLY main branch to customer repo
+      run: |
+        git push customer main
