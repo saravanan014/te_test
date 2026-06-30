@@ -17,20 +17,27 @@ jobs:
  
     - name: Configure Git
       run: |
-        git config --global user.name "saravanan014"
-        git config --global user.email "saravanan014@users.noreply.github.com"
+        git config --global user.name "mirror-bot"
+        git config --global user.email "mirror@github.com"
  
-    - name: Inject PAT into remote (CRITICAL STEP)
+    # ✅ FORCE AUTHENTICATION
+    - name: Inject PAT globally
       env:
         TOKEN: ${{ secrets.TARGET_PAT }}
       run: |
-        git remote set-url origin https://saravanan014:$TOKEN@github.com/saravanan014/te_test.git
-        git remote add customer https://saravanan014:$TOKEN@github.com/revendh/cust_test.git
+        git config --global url."https://$TOKEN@github.com/".insteadOf "https://github.com/"
  
-    - name: Debug remotes (IMPORTANT)
+    # ✅ TEST ACCESS (VERY IMPORTANT)
+    - name: Test access to customer repo
       run: |
-        git remote -v
+        git ls-remote https://github.com/revendh/cust_test.git
  
+    # ✅ ADD REMOTE
+    - name: Add remote
+      run: |
+        git remote add customer https://github.com/revendh/cust_test.git
+ 
+    # ✅ PUSH
     - name: Push to customer repo
       run: |
         git push customer main
