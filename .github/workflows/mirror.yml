@@ -17,28 +17,13 @@ jobs:
  
     - name: Configure Git
       run: |
-        git config --global user.name "mirror-bot"
-        git config --global user.email "mirror@github.com"
+        git config --global user.name "revendh"
+        git config --global user.email "revendh@users.noreply.github.com"
  
-    # ✅ FORCE AUTHENTICATION
-    - name: Inject PAT globally
+    # ✅ DIRECT PUSH WITH TOKEN (KEY FIX)
+    - name: Push to customer repo
       env:
         TOKEN: ${{ secrets.TARGET_PAT }}
       run: |
-        git config --global url."https://$TOKEN@github.com/".insteadOf "https://github.com/"
- 
-    # ✅ TEST ACCESS (VERY IMPORTANT)
-    - name: Test access to customer repo
-      run: |
-        git ls-remote https://github.com/revendh/cust_test.git
- 
-    # ✅ ADD REMOTE
-    - name: Add remote
-      run: |
-        git remote add customer https://github.com/revendh/cust_test.git
- 
-    # ✅ PUSH
-    - name: Push to customer repo
-      run: |
-        git push customer main
+        git push https://x-access-token:$TOKEN@github.com/revendh/cust_test.git main
  
