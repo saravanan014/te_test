@@ -1,4 +1,4 @@
-name: Sync to Customer Repo (Post-PR Merge Only)
+name: Sync to Customer Repo
  
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
-    - name: Checkout source repo
+    - name: Checkout repo
       uses: actions/checkout@v4.1.7
       with:
         fetch-depth: 0
@@ -20,13 +20,18 @@ jobs:
         git config --global user.name "saravanan014"
         git config --global user.email "saravanan014@users.noreply.github.com"
  
-    - name: Add customer repo remote
+    - name: Inject PAT into remote (CRITICAL STEP)
       env:
         TOKEN: ${{ secrets.TARGET_PAT }}
       run: |
+        git remote set-url origin https://saravanan014:$TOKEN@github.com/saravanan014/te_test.git
         git remote add customer https://saravanan014:$TOKEN@github.com/revendh/cust_test.git
  
-    - name: Push main branch to customer repo
+    - name: Debug remotes (IMPORTANT)
+      run: |
+        git remote -v
+ 
+    - name: Push to customer repo
       run: |
         git push customer main
  
